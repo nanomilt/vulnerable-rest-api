@@ -29,15 +29,14 @@ router.put('/:id', auth, async(req,res)=>{
         }
     }, {new: true})
 
-    res.send(book);
+    res.render('book', { book }); // Safely render the book object
 })
 
 router.delete('/:id', auth ,async(req,res)=>{
     const book = await Book.findByIdAndRemove(req.params.id);
-    if(!book) return res.status(404).send("The book with the given ID was not found");
+    if(!book) return res.status(404).render('error', { error: "The book with the given ID was not found" }); // Safely render the error message
 
-    res.send(book);
+    res.render('book', { book }); // Safely render the book object
 })
 
 module.exports = router;
-
