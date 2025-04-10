@@ -2,7 +2,7 @@
 
 # Broken Object Property Level Authorization
 
-- Mass Assignment
+ - Mass Assignment
   - Vulnerable Endpoints
     - POST /api/users
 - Excessive Data Exposure
