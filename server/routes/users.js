@@ -20,7 +20,7 @@ router.get('/:name', auth, async(req,res)=>{
     const regex = /([a-zA-Z0-9]+)+$/;
     if(regex.test(req.params.name)){
         const user = await User.findOne({'username':req.params.name});
-        return res.send(_.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit']));
+        return res.render('user', _.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit'])); // Fixed: Use res.render() to render safely escaped HTML
     }
     res.status(400).send('Invalid Name');
 })
@@ -63,7 +63,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
             password: user.password
         }
     })
-    res.send({status: 'Updated',domain});
+    res.render('status', {status: 'Updated', domain}); // Fixed: Use res.render() to render safely escaped HTML
 })
 
 router.post('/otp', async(req,res)=>{
@@ -80,7 +80,7 @@ router.post('/otp', async(req,res)=>{
         createdAt: Date.now()
     })
 
-    const host = req.hostname;
+    const host = process.env.HOST || req.hostname;
     const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
 
     await link.save();
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-

@@ -34,7 +34,7 @@ router.put('/:id', auth, async(req,res)=>{
         }
     })
 
-    res.send('Updated Successfully');
+    res.render('updated', { message: 'Updated Successfully' }); // Use res.render() to safely escape HTML
 })
 
 router.delete('/:id', auth, async(req,res)=>{
@@ -45,4 +45,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-
