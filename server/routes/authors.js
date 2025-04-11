@@ -16,33 +16,34 @@ router.get('/:id', async (req,res)=>{
 })
 
 router.post('/', auth, async(req,res)=>{
-    let author = await Author.findOne({email: req.body.email});
+    const author = await Author.findOne({email: req.body.email});
     if(author) return res.status(400).send('Author is Already Existed!');
 
-    author = new Author(req.body);
-    author.save();
-    res.status(201).send(author);
+    const newAuthor = new Author(req.body);
+    await newAuthor.save();
+    res.status(201).send(newAuthor);
 })
 
 router.put('/:id', auth, async(req,res)=>{
-    await Author.findByIdAndUpdate({_id: req.params.id}, {
+    const updatedAuthor = await Author.findByIdAndUpdate({_id: req.params.id}, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             about: req.body.about,
             job: req.body.job
         }
-    })
+    }, {new: true})
 
-    res.send('Updated Successfully');
+    if(!updatedAuthor) return res.status(404).send('The author with the given ID was not found');
+
+    res.render('author', { author: updatedAuthor }); // Use res.render() to render safely escaped HTML
 })
 
 router.delete('/:id', auth, async(req,res)=>{
     const author = await Author.findByIdAndRemove({_id: req.params.id});
     if(!author) return res.status(404).send('The author with the given ID was not found');
 
-    res.send(author);
+    res.render('author', { author }); // Use res.render() to render safely escaped HTML
 })
 
 module.exports = router;
-
