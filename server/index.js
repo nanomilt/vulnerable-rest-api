@@ -3,10 +3,15 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const appDev = express();
+const csrf = require('csurf'); // Import CSRF middleware
 
 require('./startup/logging')();
 require('./startup/routes')(app, appDev);
 require('./startup/db')();
+
+// Apply CSRF middleware to all routes
+app.use(csrf());
+appDev.use(csrf());
 
 const port = process.env.PORT || 3001;
 const server = app.listen(port, () => { winston.info(`Listening on port ${port}`) });
