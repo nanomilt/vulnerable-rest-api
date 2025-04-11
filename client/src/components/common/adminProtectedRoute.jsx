@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import auth from '../../services/authService';
 
-const AdminProtectedRoute = ({path, component:Component, render, ...rest }) => {
+const AdminProtectedRoute = ({path, component: Component, render, ...rest }) => {
     return (
         <Route
         {...rest}
