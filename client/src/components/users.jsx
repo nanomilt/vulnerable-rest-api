@@ -49,7 +49,7 @@ class Users extends Component {
 
       handleDelete = async user => {
         const notification = this.notificationSystem.current;
-        if(user.role == 'ADMIN'){
+        if(user.role === 'ADMIN'){
             notification.addNotification({
                 message: 'Admin can not be deleted!',
                 level: 'error'
@@ -69,10 +69,10 @@ class Users extends Component {
             notification.addNotification({
               message: ex.response.data,
               level: 'error'
-            });
+            })
+          }
         }
-      };
-    }
+      }
 
       handleSort = sortColumn => {
         this.setState({ sortColumn });
