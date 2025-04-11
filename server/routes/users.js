@@ -20,7 +20,7 @@ router.get('/:name', auth, async(req,res)=>{
     const regex = /([a-zA-Z0-9]+)+$/;
     if(regex.test(req.params.name)){
         const user = await User.findOne({'username':req.params.name});
-        return res.send(_.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit']));
+        return res.render('userDetails', _.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit'])); // Fixed line
     }
     res.status(400).send('Invalid Name');
 })
@@ -45,9 +45,9 @@ router.post('/', async (req, res)=>{
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
-    let user = await User.findOne({_id: req.params.id});
+    const user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -63,7 +63,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
             password: user.password
         }
     })
-    res.send({status: 'Updated',domain});
+    res.render('userUpdated', {status: 'Updated', domain}); // Fixed line
 })
 
 router.post('/otp', async(req,res)=>{
@@ -81,7 +81,7 @@ router.post('/otp', async(req,res)=>{
     })
 
     const host = req.hostname;
-    const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
+    const resetLink = `http://${host}:${process.env.PORT || 3000}/change-password?token=${link.token}&userId=${link.userId}`;
 
     await link.save();
     // send email to user
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-
