@@ -20,7 +20,7 @@ router.get('/:name', auth, async(req,res)=>{
     const regex = /([a-zA-Z0-9]+)+$/;
     if(regex.test(req.params.name)){
         const user = await User.findOne({'username':req.params.name});
-        return res.send(_.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit']));
+        return res.render('user', _.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit'])); // Use res.render() instead of res.send() to render safely escaped HTML
     }
     res.status(400).send('Invalid Name');
 })
@@ -33,7 +33,7 @@ router.post('/', async (req, res)=>{
     user = new User(req.body);
 
     if(req.body.ref){
-        await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } })
+        const updatedUser = await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } }, { new: true });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -47,7 +47,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
     let user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -55,15 +55,15 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.newPass, salt);
 
-    await User.findOneAndUpdate({_id: req.params.id}, {
+    const updatedUser = await User.findOneAndUpdate({_id: req.params.id}, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             website: req.body.url,
             password: user.password
         }
-    })
-    res.send({status: 'Updated',domain});
+    }, { new: true });
+    res.render('userUpdate', { status: 'Updated', domain }); // Use res.render() instead of res.send() to render safely escaped HTML
 })
 
 router.post('/otp', async(req,res)=>{
@@ -80,7 +80,7 @@ router.post('/otp', async(req,res)=>{
         createdAt: Date.now()
     })
 
-    const host = req.hostname;
+    const host = process.env.HOST || req.hostname; // Replace any env variables with process.env.VARIABLE_NAME
     const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
 
     await link.save();
@@ -98,11 +98,11 @@ router.post('/verify', async(req,res)=>{
 
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(req.body.password.value, salt);
-    await User.findOneAndUpdate({_id: user.userId}, {
+    const updatedUser = await User.findOneAndUpdate({_id: user.userId}, {
         $set: {
             password
         }
-    })
+    }, { new: true });
 
     await Token.findOneAndRemove({userId: req.body.user.userId});
     res.send('Updated Successfully!');
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-
