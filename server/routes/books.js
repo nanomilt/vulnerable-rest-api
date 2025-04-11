@@ -9,7 +9,7 @@ router.get('/', async (req,res)=>{
 })
 
 router.get('/:id', async(req,res)=>{
-    const book = await Book.findById({_id: req.params.id}).populate('author', 'name email phoneNumber -_id').populate('category', 'name -_id');
+    const book = await Book.findById(req.params.id).populate('author', 'name email phoneNumber -_id').populate('category', 'name -_id');
     res.send(book);
 })
 
@@ -20,7 +20,7 @@ router.post('/', auth, async(req,res)=>{
 })
 
 router.put('/:id', auth, async(req,res)=>{
-    const book = await Book.findByIdAndUpdate({_id: req.params.id}, {
+    const book = await Book.findByIdAndUpdate(req.params.id, {
         $set: {
             title: req.body.title,
             category: req.body.category,
@@ -29,15 +29,14 @@ router.put('/:id', auth, async(req,res)=>{
         }
     }, {new: true})
 
-    res.send(book);
+    res.render('book', { book }); // Render a view safely
 })
 
 router.delete('/:id', auth ,async(req,res)=>{
     const book = await Book.findByIdAndRemove(req.params.id);
-    if(!book) return res.status(404).send("The book with the given ID was not found");
+    if(!book) return res.status(404).render('error', { message: "The book with the given ID was not found" }); // Render a view safely
 
-    res.send(book);
+    res.render('book', { book }); // Render a view safely
 })
 
 module.exports = router;
-
