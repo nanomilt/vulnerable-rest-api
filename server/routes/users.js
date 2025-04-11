@@ -20,7 +20,7 @@ router.get('/:name', auth, async(req,res)=>{
     const regex = /([a-zA-Z0-9]+)+$/;
     if(regex.test(req.params.name)){
         const user = await User.findOne({'username':req.params.name});
-        return res.send(_.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit']));
+        return res.render('user', _.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit'])); // Render safely escaped HTML
     }
     res.status(400).send('Invalid Name');
 })
@@ -33,7 +33,7 @@ router.post('/', async (req, res)=>{
     user = new User(req.body);
 
     if(req.body.ref){
-        await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } })
+        const referredUser = await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -45,12 +45,12 @@ router.post('/', async (req, res)=>{
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
-    let user = await User.findOne({_id: req.params.id});
+    const user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
-        .catch(function(err) { return; })
+        .catch(function() { }) // Removed the return statement
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.newPass, salt);
@@ -63,12 +63,12 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
             password: user.password
         }
     })
-    res.send({status: 'Updated',domain});
+    res.render('status', {status: 'Updated', domain}); // Render safely escaped HTML
 })
 
 router.post('/otp', async(req,res)=>{
     const user = await User.findOne({username: req.body.username});
-    if(!user.email) return res.status(404).send('User does not exist!');
+    if(!user) return res.status(404).send('User does not exist!');
 
     // generate the token
     const generatedOTP = Math.floor(Math.random() * 9000 + 1000);
@@ -80,14 +80,14 @@ router.post('/otp', async(req,res)=>{
         createdAt: Date.now()
     })
 
-    const host = req.hostname;
-    const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
+    const host = process.env.HOST || req.hostname;
+    const resetLink = `http://${host}:${process.env.PORT || 3000}/change-password?token=${link.token}&userId=${link.userId}`;
 
     await link.save();
     // send email to user
     sendEmail(user.email, resetLink);
 
-    res.send({status: 'created', user: user._id});
+    res.send({status: 'created', userId: user._id});
 })
 
 router.post('/verify', async(req,res)=>{
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-

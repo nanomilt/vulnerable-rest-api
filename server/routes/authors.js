@@ -20,21 +20,21 @@ router.post('/', auth, async(req,res)=>{
     if(author) return res.status(400).send('Author is Already Existed!');
 
     author = new Author(req.body);
-    author.save();
+    await author.save();
     res.status(201).send(author);
 })
 
 router.put('/:id', auth, async(req,res)=>{
-    await Author.findByIdAndUpdate({_id: req.params.id}, {
+    const updatedAuthor = await Author.findByIdAndUpdate({_id: req.params.id}, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             about: req.body.about,
             job: req.body.job
         }
-    })
+    }, {new: true});
 
-    res.send('Updated Successfully');
+    res.render('author', { author: updatedAuthor }); // Use res.render() instead of directly writing to the response
 })
 
 router.delete('/:id', auth, async(req,res)=>{
@@ -45,4 +45,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-
