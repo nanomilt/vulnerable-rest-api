@@ -65,6 +65,6 @@ module.exports = {
   },
 
   async down(db, client) {
-    await db.collection("authors").deleteMany({})
+    await db.collection("authors").deleteMany({});
   }
 };

@@ -43,10 +43,10 @@ class Books extends Component {
         notification.addNotification({
           message: ex.response.data,
           level: 'error'
-        });
+        })
+      }
     }
-  };
-}
+  }
 
   handlePageChange = page => {
     this.setState({ currentPage: page });

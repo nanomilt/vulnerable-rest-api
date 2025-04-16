@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 router.post('/', async (req, res)=>{
 
-    let user = await User.findOne({'username':req.body.username});
+    const user = await User.findOne({'username':req.body.username});
     if(!user) return res.status(400).send('Invalid Username or Password');
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
@@ -17,4 +17,3 @@ router.post('/', async (req, res)=>{
 })
 
 module.exports = router;
-

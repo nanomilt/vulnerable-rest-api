@@ -34,7 +34,7 @@ const NavBar = ({user}) => {
           <NavLink className="nav-item nav-link" to="/authors">
             Authors
           </NavLink>
-          {role == 'ADMIN' && (
+          {role === 'ADMIN' && (
           <NavLink className="nav-item nav-link" to="/profile/users">
             Users
           </NavLink>
