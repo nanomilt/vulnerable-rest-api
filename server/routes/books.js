@@ -27,7 +27,7 @@ router.put('/:id', auth, async(req,res)=>{
             publishedDate: req.body.publishedDate,
             author: req.body.author
         }
-    }, {new: true})
+    }, {new: true});
 
     res.send(book);
 })
@@ -40,4 +40,3 @@ router.delete('/:id', auth ,async(req,res)=>{
 })
 
 module.exports = router;
-

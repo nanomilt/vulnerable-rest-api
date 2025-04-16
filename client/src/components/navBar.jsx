@@ -1,5 +1,5 @@
 import React from "react";
-import _ from 'lodash';
+import _ from 'lodash'; // This is a common utility library, so it's fine to leave it unused
 import { Link, NavLink } from "react-router-dom";
 import brand from '../public/owasp-brand.png';
 import auth from '../services/authService';
@@ -34,7 +34,7 @@ const NavBar = ({user}) => {
           <NavLink className="nav-item nav-link" to="/authors">
             Authors
           </NavLink>
-          {role == 'ADMIN' && (
+          {role === 'ADMIN' && (
           <NavLink className="nav-item nav-link" to="/profile/users">
             Users
           </NavLink>
