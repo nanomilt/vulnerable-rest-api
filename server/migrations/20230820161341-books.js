@@ -39,8 +39,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
+    // Commented out the unused variable declaration
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
   }
 };

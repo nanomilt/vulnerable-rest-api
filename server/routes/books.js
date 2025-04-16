@@ -27,8 +27,9 @@ router.put('/:id', auth, async(req,res)=>{
             publishedDate: req.body.publishedDate,
             author: req.body.author
         }
-    }, {new: true})
+    }, {new: true});
 
+    if (!book) return res.status(404).send("The book with the given ID was not found");
     res.send(book);
 })
 
@@ -40,4 +41,3 @@ router.delete('/:id', auth ,async(req,res)=>{
 })
 
 module.exports = router;
-
