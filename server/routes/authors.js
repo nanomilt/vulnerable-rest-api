@@ -1,7 +1,6 @@
 const express = require('express');
 const {Author} = require('../models/author');
 const auth = require('../middleware/auth');
-const _ = require('lodash');
 const router = express.Router();
 
 router.get('/', async (req,res)=>{
@@ -20,19 +19,21 @@ router.post('/', auth, async(req,res)=>{
     if(author) return res.status(400).send('Author is Already Existed!');
 
     author = new Author(req.body);
-    author.save();
+    await author.save();
     res.status(201).send(author);
 })
 
 router.put('/:id', auth, async(req,res)=>{
-    await Author.findByIdAndUpdate({_id: req.params.id}, {
+    const updatedAuthor = await Author.findByIdAndUpdate({_id: req.params.id}, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             about: req.body.about,
             job: req.body.job
         }
-    })
+    }, {new: true});
+
+    if(!updatedAuthor) return res.status(404).send('The author with the given ID was not found');
 
     res.send('Updated Successfully');
 })
@@ -45,4 +46,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-
