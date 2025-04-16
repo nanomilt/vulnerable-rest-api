@@ -6,28 +6,22 @@ module.exports = {
     await db
       .collection("categories")
       .insertMany([{
-        "_id": new ObjectId("647f04587957d0d366afa4a4")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a4"),
         "name": "Programming"
       },{
-        "_id": new ObjectId("647f04587957d0d366afa4a5")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a5"),
         "name": "AI"
       },{
-        "_id": new ObjectId("647f04587957d0d366afa4a6")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a6"),
         "name": "Network"
       },{
-        "_id": new ObjectId("647f04587957d0d366afa4a7")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a7"),
         "name": "IoT"
       },{
-        "_id": new ObjectId("647f04587957d0d366afa4a8")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a8"),
         "name": "Blockchain"
       },{
-        "_id": new ObjectId("647f04587957d0d366afa4a9")
-        ,
+        "_id": new ObjectId("647f04587957d0d366afa4a9"),
         "name": "Web Security"
       }]);
   },
