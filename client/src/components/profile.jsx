@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import _ from 'lodash';
 import { getUser } from '../services/userService';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -7,7 +6,6 @@ class Profile extends Component {
     state = {
         userName: '',
         userInfo: []
-
      }
 
 
@@ -53,7 +51,7 @@ class Profile extends Component {
                             <li className="nav-item">
                                 <NavLink to="/profile/edit" className='btn btn-primary'>Edit</NavLink>
                             </li>
-                            {userInfo.credit == 10 && (
+                            {userInfo.credit === 10 && (
                                 <p>You have {userInfo.credit} credits! Send an email to vulrestapi@company.com for free book!</p>
                             )}
                         </ul>
