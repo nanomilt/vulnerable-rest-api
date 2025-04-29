@@ -39,8 +39,15 @@ module.exports = {
   },
 
   async down(db, client) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
-    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+    // Remove the inserted books
+    await db.collection("books").deleteMany({
+      "_id": {
+        $in: [
+          new ObjectId("647f2c9311da4d2da202dd77"),
+          new ObjectId("647f2c9311da4d2da202dd78"),
+          new ObjectId("647f2c9311da4d2da202dd79")
+        ]
+      }
+    });
   }
 };
