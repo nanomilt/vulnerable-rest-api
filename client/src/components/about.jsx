@@ -18,6 +18,7 @@ class About extends Component{
                 const {data} = await addSubscriber(params.get('email'));
                 this.setState({result: data.email});
             }catch(ex){
+                const notification = this.notificationSystem.current;
                 notification.addNotification({
                     message: 'Try again later',
                     level: 'error'
