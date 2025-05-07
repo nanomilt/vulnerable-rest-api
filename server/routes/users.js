@@ -27,10 +27,10 @@ router.get('/:name', auth, async(req,res)=>{
 
 router.post('/', async (req, res)=>{
 
-    let user = await User.findOne({email: req.body.email});
-    if(user) return res.status(400).send('Invalid email or password');
+    const existingUser = await User.findOne({email: req.body.email});
+    if(existingUser) return res.status(400).send('Invalid email or password');
 
-    user = new User(req.body);
+    const user = new User(req.body);
 
     if(req.body.ref){
         await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } })
@@ -45,9 +45,9 @@ router.post('/', async (req, res)=>{
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
-    let user = await User.findOne({_id: req.params.id});
+    const user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -68,7 +68,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
 router.post('/otp', async(req,res)=>{
     const user = await User.findOne({username: req.body.username});
-    if(!user.email) return res.status(404).send('User does not exist!');
+    if(!user || !user.email) return res.status(404).send('User does not exist!');
 
     // generate the token
     const generatedOTP = Math.floor(Math.random() * 9000 + 1000);
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-
