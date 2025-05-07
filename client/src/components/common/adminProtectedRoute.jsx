@@ -3,11 +3,12 @@ import { Route, Redirect } from 'react-router-dom';
 import auth from '../../services/authService';
 
 const AdminProtectedRoute = ({path, component:Component, render, ...rest }) => {
+    const user = auth.getUser();
     return (
         <Route
         {...rest}
         render={props => {
-            if(!auth.getUser() || auth.getUser().role !== 'ADMIN') return <Redirect to={{
+            if(!user || user.role !== 'ADMIN') return <Redirect to={{
                 pathname: '/not-found',
                 state: { from: props.location }
             }} />;
