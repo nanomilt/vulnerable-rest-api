@@ -33,7 +33,7 @@ router.post('/', async (req, res)=>{
     user = new User(req.body);
 
     if(req.body.ref){
-        await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } })
+        const referredUser = await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -45,9 +45,9 @@ router.post('/', async (req, res)=>{
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
-    let user = await User.findOne({_id: req.params.id});
+    const user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -91,14 +91,14 @@ router.post('/otp', async(req,res)=>{
 })
 
 router.post('/verify', async(req,res)=>{
-    const user = await Token.findOne({userId: req.body.user.userId}).sort({"createdAt": -1}).limit(1);
-    if(!user) return res.status(401).send('Token has expired!');
+    const token = await Token.findOne({userId: req.body.user.userId}).sort({"createdAt": -1}).limit(1);
+    if(!token) return res.status(401).send('Token has expired!');
 
-    if(user.token !== req.body.user.token) return res.status(401).send('Access Denied!');
+    if(token.token !== req.body.user.token) return res.status(401).send('Access Denied!');
 
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(req.body.password.value, salt);
-    await User.findOneAndUpdate({_id: user.userId}, {
+    await User.findOneAndUpdate({_id: token.userId}, {
         $set: {
             password
         }
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-
