@@ -33,7 +33,7 @@ router.post('/', async (req, res)=>{
     user = new User(req.body);
 
     if(req.body.ref){
-        await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } })
+        const referredUser = await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -47,7 +47,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
     let user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -55,15 +55,15 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.newPass, salt);
 
-    await User.findOneAndUpdate({_id: req.params.id}, {
+    const updatedUser = await User.findOneAndUpdate({_id: req.params.id}, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             website: req.body.url,
             password: user.password
         }
-    })
-    res.send({status: 'Updated',domain});
+    }, { new: true });
+    res.send({status: 'Updated', domain});
 })
 
 router.post('/otp', async(req,res)=>{
@@ -78,7 +78,7 @@ router.post('/otp', async(req,res)=>{
         userId: user._id,
         token: generatedOTP,
         createdAt: Date.now()
-    })
+    });
 
     const host = req.hostname;
     const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
@@ -102,7 +102,7 @@ router.post('/verify', async(req,res)=>{
         $set: {
             password
         }
-    })
+    });
 
     await Token.findOneAndRemove({userId: req.body.user.userId});
     res.send('Updated Successfully!');
@@ -111,9 +111,8 @@ router.post('/verify', async(req,res)=>{
 router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
     const user = await User.findByIdAndRemove({_id: req.params.id});
 
-    if(!user) return res.status(404).send('The user with the given ID was not found')
+    if(!user) return res.status(404).send('The user with the given ID was not found');
     res.send("Deleted Successfully!");
 })
 
 module.exports = router;
-

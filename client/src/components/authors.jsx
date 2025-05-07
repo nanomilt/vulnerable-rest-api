@@ -73,7 +73,7 @@ class Authors extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
