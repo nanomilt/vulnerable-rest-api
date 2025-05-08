@@ -16,12 +16,12 @@ router.get('/:id', async (req,res)=>{
 })
 
 router.post('/', auth, async(req,res)=>{
-    let author = await Author.findOne({email: req.body.email});
+    const author = await Author.findOne({email: req.body.email});
     if(author) return res.status(400).send('Author is Already Existed!');
 
-    author = new Author(req.body);
-    author.save();
-    res.status(201).send(author);
+    const newAuthor = new Author(req.body);
+    newAuthor.save();
+    res.status(201).send(newAuthor);
 })
 
 router.put('/:id', auth, async(req,res)=>{
@@ -45,4 +45,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-
