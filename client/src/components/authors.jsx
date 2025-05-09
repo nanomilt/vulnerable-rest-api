@@ -65,15 +65,15 @@ class Authors extends Component {
       notification.addNotification({
         message: 'Deleted Successfully',
         level: 'success'
-      });
+      })
     }catch(ex){
       if(ex.response && ex.response.status === 400){
         notification.addNotification({
           message: ex.response.data,
           level: 'error'
-        });
+        })
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
@@ -133,7 +133,7 @@ class Authors extends Component {
       <NotificationSystem ref={this.notificationSystem} />
       </div>
     </div>
-    );
+    )
   }
 };
 
