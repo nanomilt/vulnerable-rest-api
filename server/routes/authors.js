@@ -1,7 +1,6 @@
 const express = require('express');
 const {Author} = require('../models/author');
 const auth = require('../middleware/auth');
-const _ = require('lodash');
 const router = express.Router();
 
 router.get('/', async (req,res)=>{
@@ -45,4 +44,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-

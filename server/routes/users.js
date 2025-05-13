@@ -9,7 +9,6 @@ const validateObjectId = require('../middleware/validateObjectId');
 const admin = require('../middleware/admin');
 const {User} = require('../models/user');
 const {Token} = require('../models/token');
-const { default: mongoose } = require('mongoose');
 
 router.get('/' , [auth,admin], async (req,res)=>{
     const users = await User.find();
@@ -45,12 +44,12 @@ router.post('/', async (req, res)=>{
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
-    let user = await User.findOne({_id: req.params.id});
+    const user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
-        .catch(function(err) { return; })
+        .catch(function() { })
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.newPass, salt);
@@ -116,4 +115,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-

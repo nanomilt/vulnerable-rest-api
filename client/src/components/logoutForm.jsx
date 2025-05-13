@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import auth from '../services/authService';
 
-class LogoutForm extends Component {
+class LogoutForm extends React.Component {
 
     componentDidMount() {
         auth.logout();
