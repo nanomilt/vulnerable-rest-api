@@ -7,11 +7,11 @@ function cacheRoute(req, res, next) {
     if((new RegExp('.*\.(css|js|png)$')).test(key)){
         if(cache.has(key)){
             console.log(cache.has(key))
-            return res.set('Content-Type','application/json').send(JSON.parse(cache.get(key)));
+            return res.set('Content-Type','application/json').send(cache.get(key));
         }else{
             res.sendResponse = res.send;
             res.send = (body) => {
-                cache.set(key, JSON.stringify(body))
+                cache.set(key, body)
                 res.sendResponse(body);
             }
             next();

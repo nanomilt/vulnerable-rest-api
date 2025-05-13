@@ -5,7 +5,7 @@ class LogoutForm extends Component {
 
     componentDidMount() {
         auth.logout();
-        window.location = '/';
+        window.location.href = '/';
     }
 
     render() {

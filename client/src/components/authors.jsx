@@ -13,7 +13,7 @@ class Authors extends Component {
   constructor(){
     super();
     const user = auth.getUser();
-    if(user && user.role == 'ADMIN'){
+    if(user && user.role === 'ADMIN'){
         this.columns.push(this.updateColumn,this.deleteColumn);
     }
   }
@@ -72,9 +72,9 @@ class Authors extends Component {
           message: ex.response.data,
           level: 'error'
         });
+      }
     }
   };
-}
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });

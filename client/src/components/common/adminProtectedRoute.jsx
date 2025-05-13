@@ -11,7 +11,7 @@ const AdminProtectedRoute = ({path, component:Component, render, ...rest }) => {
                 pathname: '/not-found',
                 state: { from: props.location }
             }} />;
-            return Component ? <Component {...props}/> : render(props);
+            return Component ? <Component {...props}/> : render ? render(props) : null;
         }} />
     );
 }

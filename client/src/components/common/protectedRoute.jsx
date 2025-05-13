@@ -11,7 +11,7 @@ const ProtectedRoute = ({path, component:Component, render, ...rest }) => {
                 pathname: '/login',
                 state: { from: props.location }
             }} />;
-            return Component ? <Component {...props}/> : render(props);
+            return Component ? <Component {...props}/> : render ? render(props) : null;
         }} />
     );
 }

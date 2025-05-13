@@ -44,9 +44,9 @@ class Books extends Component {
           message: ex.response.data,
           level: 'error'
         });
+      }
     }
   };
-}
 
   handlePageChange = page => {
     this.setState({ currentPage: page });

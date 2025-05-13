@@ -49,7 +49,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
     var domain;
     await needle('get', req.body.url)
-        .then(function(resp) { domain =  resp.body; })
+        .then(function(resp) { domain =  resp.body.toString(); })
         .catch(function(err) { return; })
 
     const salt = await bcrypt.genSalt(10);
@@ -116,4 +116,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-

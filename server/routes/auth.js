@@ -10,11 +10,10 @@ router.post('/', async (req, res)=>{
     if(!user) return res.status(400).send('Invalid Username or Password');
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if(!validPassword) return res.status(400).send({error: 'Invalid Username or Password',userId: user._id});
+    if(!validPassword) return res.status(400).send({error: 'Invalid Username or Password'});
 
-    const token = user.generateToken();
-    res.header('X-Auth-Token', token).status(200).send(user);
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_PRIVATE_KEY);
+    res.header('X-Auth-Token', token).status(200).send({username: user.username, email: user.email});
 })
 
 module.exports = router;
-

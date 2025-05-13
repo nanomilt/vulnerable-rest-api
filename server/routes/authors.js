@@ -10,7 +10,7 @@ router.get('/', async (req,res)=>{
 })
 
 router.get('/:id', async (req,res)=>{
-    const author = await Author.findById({_id: req.params.id});
+    const author = await Author.findById(req.params.id);
     if(!author) return res.status(404).send("Author Not Found");
     res.send(author);
 })
@@ -20,29 +20,30 @@ router.post('/', auth, async(req,res)=>{
     if(author) return res.status(400).send('Author is Already Existed!');
 
     author = new Author(req.body);
-    author.save();
+    await author.save();
     res.status(201).send(author);
 })
 
 router.put('/:id', auth, async(req,res)=>{
-    await Author.findByIdAndUpdate({_id: req.params.id}, {
+    const author = await Author.findByIdAndUpdate(req.params.id, {
         $set: {
             name: req.body.name,
             email: req.body.email,
             about: req.body.about,
             job: req.body.job
         }
-    })
+    }, {new: true});
 
-    res.send('Updated Successfully');
+    if(!author) return res.status(404).send('The author with the given ID was not found');
+
+    res.send(author);
 })
 
 router.delete('/:id', auth, async(req,res)=>{
-    const author = await Author.findByIdAndRemove({_id: req.params.id});
+    const author = await Author.findByIdAndRemove(req.params.id);
     if(!author) return res.status(404).send('The author with the given ID was not found');
 
     res.send(author);
 })
 
 module.exports = router;
-
