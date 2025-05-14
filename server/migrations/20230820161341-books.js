@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-var ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
   async up(db, client) {
+    const ObjectId = mongoose.Types.ObjectId;
     await db
       .collection("books")
       .insertMany([{
