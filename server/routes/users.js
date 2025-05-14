@@ -47,7 +47,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
     let user = await User.findOne({_id: req.params.id});
 
-    var domain;
+    let domain;
     await needle('get', req.body.url)
         .then(function(resp) { domain =  resp.body; })
         .catch(function(err) { return; })
@@ -70,10 +70,8 @@ router.post('/otp', async(req,res)=>{
     const user = await User.findOne({username: req.body.username});
     if(!user.email) return res.status(404).send('User does not exist!');
 
-    // generate the token
     const generatedOTP = Math.floor(Math.random() * 9000 + 1000);
 
-    // save the token to db
     const link = new Token({
         userId: user._id,
         token: generatedOTP,
@@ -84,7 +82,6 @@ router.post('/otp', async(req,res)=>{
     const resetLink = `http://${host}:3000/change-password?token=${link.token}&userId=${link.userId}`;
 
     await link.save();
-    // send email to user
     sendEmail(user.email, resetLink);
 
     res.send({status: 'created', user: user._id});
@@ -116,4 +113,3 @@ router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
 })
 
 module.exports = router;
-
