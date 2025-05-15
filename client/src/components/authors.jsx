@@ -71,9 +71,9 @@ class Authors extends Component {
         notification.addNotification({
           message: ex.response.data,
           level: 'error'
-        });
+        })
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {

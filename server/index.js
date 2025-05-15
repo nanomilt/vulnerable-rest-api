@@ -1,5 +1,4 @@
- const winston = require('winston');
-const path = require('path');
+const winston = require('winston');
 const express = require('express');
 const app = express();
 const appDev = express();

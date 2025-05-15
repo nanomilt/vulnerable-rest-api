@@ -1,7 +1,6 @@
 const express = require('express');
 const {Author} = require('../models/author');
 const auth = require('../middleware/auth');
-const _ = require('lodash');
 const router = express.Router();
 
 router.get('/', async (req,res)=>{
@@ -20,7 +19,7 @@ router.post('/', auth, async(req,res)=>{
     if(author) return res.status(400).send('Author is Already Existed!');
 
     author = new Author(req.body);
-    author.save();
+    await author.save();
     res.status(201).send(author);
 })
 
@@ -45,4 +44,3 @@ router.delete('/:id', auth, async(req,res)=>{
 })
 
 module.exports = router;
-
