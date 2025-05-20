@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import _ from "lodash";
+import React, { Component } from 'react';
+import _ from 'lodash';
 import NotificationSystem from 'react-notification-system';
-import BooksTable from "./booksTable";
-import Pagination from "./common/pagination";
+import BooksTable from './booksTable';
+import Pagination from './common/pagination';
 import { getBooks, deleteBook } from '../services/bookService';
-import { getCategories } from "../services/categoryService";
-import { paginate } from "../utils/paginate";
-import SearchBox from "./searchBox";
+import { getCategories } from '../services/categoryService';
+import { paginate } from '../utils/paginate';
+import SearchBox from './searchBox';
 
 class Books extends Component {
   notificationSystem = React.createRef();
@@ -15,16 +15,15 @@ class Books extends Component {
     categories: [],
     currentPage: 1,
     pageSize: 5,
-    searchQuery: "",
-    sortColumn: { path: "title", order: "asc" }
+    searchQuery: '',
+    sortColumn: { path: 'title', order: 'asc' },
   };
-
 
   async componentDidMount() {
     const {data: categories} = await getCategories();
     const {data: books} = await getBooks();
 
-    this.setState({ books , categories });
+    this.setState({ books, categories });
   }
 
   handleDelete = async book => {
@@ -36,17 +35,17 @@ class Books extends Component {
       await deleteBook(book._id);
       notification.addNotification({
         message: 'Deleted Successfully',
-        level: 'success'
+        level: 'success',
       });
     }catch(ex){
       if(ex.response && ex.response.status === 400){
         notification.addNotification({
           message: ex.response.data,
-          level: 'error'
+          level: 'error',
         });
+      }
     }
   };
-}
 
   handlePageChange = page => {
     this.setState({ currentPage: page });
@@ -66,14 +65,14 @@ class Books extends Component {
       currentPage,
       sortColumn,
       searchQuery,
-      books: allBooks
+      books: allBooks,
     } = this.state;
 
     let filtered = allBooks;
     if (searchQuery)
-      filtered = allBooks.filter(m =>
-        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
-      );
+    {filtered = allBooks.filter(m =>
+      m.title.toLowerCase().startsWith(searchQuery.toLowerCase()),
+    );}
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
@@ -86,7 +85,7 @@ class Books extends Component {
     const { length: count } = this.state.books;
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
-    if (count === 0) return <p>There are no books</p>;
+    if (count === 0) {return <p>There are no books</p>;}
 
     const { totalCount, data: books } = this.getPagedData();
 
