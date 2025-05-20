@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import NotificationSystem from 'react-notification-system';
-import Pagination from "./common/pagination";
-import { paginate } from "../utils/paginate";
-import Table from "./common/table";
-import { getAuthors, deleteAuthor } from "../services/authorService";
+import Pagination from './common/pagination';
+import { paginate } from '../utils/paginate';
+import Table from './common/table';
+import { getAuthors, deleteAuthor } from '../services/authorService';
 import auth from '../services/authService';
 
 class Authors extends Component {
@@ -13,24 +13,23 @@ class Authors extends Component {
   constructor(){
     super();
     const user = auth.getUser();
-    if(user && user.role == 'ADMIN'){
-        this.columns.push(this.updateColumn,this.deleteColumn);
+    if(user && user.role === 'ADMIN'){
+      this.columns.push(this.updateColumn,this.deleteColumn);
     }
   }
 
   updateColumn = {
-    key: "update",
+    key: 'update',
     content: author => (
       <Link to={`/authors/${author._id}`}>
-          <button
+        <button
           className="btn btn-primary btn-sm">Update</button>
       </Link>
-
-  )
-  }
+    ),
+  };
 
   deleteColumn = {
-    key: "delete",
+    key: 'delete',
     content: author => (
       <button
         onClick={() => this.handleDelete(author)}
@@ -38,23 +37,23 @@ class Authors extends Component {
       >
         Delete
       </button>
-    )
-  }
+    ),
+  };
   columns = [
     {
-      path: "name",
-      label: "Name"
+      path: 'name',
+      label: 'Name',
     },
-    { path: "about", label: "About" },
-    { path: "job", label: "Job" }
-  ]
+    { path: 'about', label: 'About' },
+    { path: 'job', label: 'Job' },
+  ];
 
   state = {
     authors : [],
     currentPage: 1,
     pageSize: 3,
-    sortColumn: { path: "title", order: "asc" }
-  }
+    sortColumn: { path: 'title', order: 'asc' },
+  };
 
   handleDelete = async author => {
     const notification = this.notificationSystem.current;
@@ -64,17 +63,17 @@ class Authors extends Component {
       await deleteAuthor(author._id);
       notification.addNotification({
         message: 'Deleted Successfully',
-        level: 'success'
+        level: 'success',
       });
     }catch(ex){
       if(ex.response && ex.response.status === 400){
         notification.addNotification({
           message: ex.response.data,
-          level: 'error'
+          level: 'error',
         });
+      }
     }
   };
-}
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
@@ -84,7 +83,7 @@ class Authors extends Component {
     const {sortColumn} = this.state;
     const sorted = _.orderBy(this.state.authors, [sortColumn.path], [sortColumn.order]);
     return sorted;
-  }
+  };
 
   async componentDidMount(){
     const {data} = await getAuthors();
@@ -100,7 +99,7 @@ class Authors extends Component {
       pageSize,
       currentPage,
       sortColumn,
-      authors: allAuthors
+      authors: allAuthors,
     } = this.state;
 
     const sorted = _.orderBy(allAuthors, [sortColumn.path], [sortColumn.order]);
@@ -110,31 +109,30 @@ class Authors extends Component {
     return { data: authors, totalCount: allAuthors.length };
   };
 
-
   render(){
     const {data, totalCount} = this.getPagedData();
     const {pageSize, currentPage} = this.state;
     return (
       <div className="row authors">
         <div className="col">
-      <Table
-        columns={this.columns}
-        data={data}
-        sortColumn={this.state.sortColumn}
-        onDelete={this.handleDelete}
-        onSort={this.handleSort}
-      />
-      <Pagination
+          <Table
+            columns={this.columns}
+            data={data}
+            sortColumn={this.state.sortColumn}
+            onDelete={this.handleDelete}
+            onSort={this.handleSort}
+          />
+          <Pagination
             itemsCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
-      />
-      <NotificationSystem ref={this.notificationSystem} />
+          />
+          <NotificationSystem ref={this.notificationSystem} />
+        </div>
       </div>
-    </div>
     );
   }
-};
+}
 
 export default Authors;
