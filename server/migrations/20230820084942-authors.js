@@ -64,7 +64,7 @@ module.exports = {
       }]);
   },
 
-  async down(db, client) {
+  async down(db, _) {
     await db.collection("authors").deleteMany({})
   }
 };
