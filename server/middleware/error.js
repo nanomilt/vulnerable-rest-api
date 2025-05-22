@@ -1,6 +1,6 @@
 const winston = require('winston');
 
-module.exports = function(err) {
+module.exports = function(err, res){
   winston.error(err.message, err);
-  return 'Server Error';
+  res.status(500).send('Server Error');
 };

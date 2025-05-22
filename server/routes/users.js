@@ -10,28 +10,28 @@ const admin = require('../middleware/admin');
 const {User} = require('../models/user');
 const {Token} = require('../models/token');
 
-router.get('/' , [auth, admin], async (req, res) => {
+router.get('/' , [auth,admin], async (req,res)=>{
   const users = await User.find();
   res.send(users);
 });
 
-router.get('/:name', auth, async (req, res) => {
+router.get('/:name', auth, async(req,res)=>{
   const regex = /([a-zA-Z0-9]+)+$/;
-  if (regex.test(req.params.name)) {
-    const user = await User.findOne({'username': req.params.name});
+  if(regex.test(req.params.name)){
+    const user = await User.findOne({'username':req.params.name});
     return res.send(_.pick(user, ['name', 'email', 'role', 'username', 'website', '_id', 'credit']));
   }
   res.status(400).send('Invalid Name');
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res)=>{
   let user = await User.findOne({email: req.body.email});
-  if (user) {return res.status(400).send('Invalid email or password');}
+  if(user) {return res.status(400).send('Invalid email or password');}
 
   user = new User(req.body);
 
-  if (req.body.ref) {
-    await User.findOneAndUpdate({_id: req.body.ref}, {$inc: {credit: 1}});
+  if(req.body.ref){
+    await User.findOneAndUpdate({_id: req.body.ref}, { $inc: { credit: 1 } });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -41,17 +41,13 @@ router.post('/', async (req, res) => {
   res.send(user);
 });
 
-router.put('/:id', [auth, validateObjectId], async (req, res) => {
+router.put('/:id', [auth, validateObjectId], async(req, res)=>{
   const user = await User.findOne({_id: req.params.id});
-
   let domain;
-  await needle('get', req.body.url)
-    .then((resp) => {
-      domain = resp.body;
-    })
-    .catch(() => {
 
-    });
+  await needle('get', req.body.url)
+    .then((resp) => { domain = resp.body; })
+    .catch(() => { });
 
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(req.body.newPass, salt);
@@ -64,12 +60,12 @@ router.put('/:id', [auth, validateObjectId], async (req, res) => {
       password: user.password,
     },
   });
-  res.send({status: 'Updated', domain});
+  res.send({status: 'Updated',domain});
 });
 
-router.post('/otp', async (req, res) => {
+router.post('/otp', async(req,res)=>{
   const user = await User.findOne({username: req.body.username});
-  if (!user.email) {return res.status(404).send('User does not exist!');}
+  if(!user || !user.email) {return res.status(404).send('User does not exist!');}
 
   const generatedOTP = Math.floor(Math.random() * 9000 + 1000);
 
@@ -88,11 +84,11 @@ router.post('/otp', async (req, res) => {
   res.send({status: 'created', user: user._id});
 });
 
-router.post('/verify', async (req, res) => {
+router.post('/verify', async(req,res)=>{
   const user = await Token.findOne({userId: req.body.user.userId}).sort({'createdAt': -1}).limit(1);
-  if (!user) {return res.status(401).send('Token has expired!');}
+  if(!user) {return res.status(401).send('Token has expired!');}
 
-  if (user.token !== req.body.user.token) {return res.status(401).send('Access Denied!');}
+  if(user.token !== req.body.user.token) {return res.status(401).send('Access Denied!');}
 
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password.value, salt);
@@ -106,10 +102,10 @@ router.post('/verify', async (req, res) => {
   res.send('Updated Successfully!');
 });
 
-router.delete('/:id', [auth, validateObjectId], async (req, res) => {
+router.delete('/:id', [auth, validateObjectId], async(req,res)=>{
   const user = await User.findByIdAndRemove({_id: req.params.id});
 
-  if (!user) {return res.status(404).send('The user with the given ID was not found');}
+  if(!user) {return res.status(404).send('The user with the given ID was not found');}
   res.send('Deleted Successfully!');
 });
 

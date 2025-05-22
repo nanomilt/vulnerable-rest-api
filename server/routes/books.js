@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { Book } = require('../models/book');
+const {Book} = require('../models/book');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -27,7 +27,7 @@ router.put('/:id', auth, async (req, res) => {
       publishedDate: req.body.publishedDate,
       author: req.body.author,
     },
-  }, { new: true });
+  }, {new: true});
 
   res.send(book);
 });
