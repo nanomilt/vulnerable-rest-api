@@ -15,31 +15,27 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', auth, async (req, res) => {
-  const author = await Author.findOne({ email: req.body.email });
+  let author = await Author.findOne({ email: req.body.email });
   if (author) {return res.status(400).send('Author is Already Existed!');}
 
-  const newAuthor = new Author(req.body);
-  await newAuthor.save();
-  res.status(201).send(newAuthor);
+  author = new Author(req.body);
+  await author.save();
+  res.status(201).send(author);
 });
 
 router.put('/:id', auth, async (req, res) => {
-  const updatedAuthor = await Author.findByIdAndUpdate(
-    { _id: req.params.id },
-    {
-      $set: {
-        name: req.body.name,
-        email: req.body.email,
-        about: req.body.about,
-        job: req.body.job,
-      },
+  const updatedAuthor = await Author.findByIdAndUpdate({ _id: req.params.id }, {
+    $set: {
+      name: req.body.name,
+      email: req.body.email,
+      about: req.body.about,
+      job: req.body.job,
     },
-    { new: true },
-  );
+  }, { new: true });
 
   if (!updatedAuthor) {return res.status(404).send('The author with the given ID was not found');}
 
-  res.send('Updated Successfully');
+  res.send(updatedAuthor);
 });
 
 router.delete('/:id', auth, async (req, res) => {

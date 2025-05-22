@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
-  async up(db) {
+  async up(db, client) {
     await db
       .collection('authors')
       .insertMany([{
@@ -57,7 +57,7 @@ module.exports = {
       }]);
   },
 
-  async down(db) {
+  async down(db, client) {
     await db.collection('authors').deleteMany({});
   },
 };

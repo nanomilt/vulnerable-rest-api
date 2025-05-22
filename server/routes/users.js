@@ -25,7 +25,6 @@ router.get('/:name', auth, async(req,res)=>{
 });
 
 router.post('/', async (req, res)=>{
-
   let user = await User.findOne({email: req.body.email});
   if(user) {return res.status(400).send('Invalid email or password');}
 
@@ -43,7 +42,6 @@ router.post('/', async (req, res)=>{
 });
 
 router.put('/:id', [auth, validateObjectId], async(req, res)=>{
-
   const user = await User.findOne({_id: req.params.id});
 
   let domain;
@@ -67,7 +65,7 @@ router.put('/:id', [auth, validateObjectId], async(req, res)=>{
 
 router.post('/otp', async(req,res)=>{
   const user = await User.findOne({username: req.body.username});
-  if(!user || !user.email) {return res.status(404).send('User does not exist!');}
+  if(!user) {return res.status(404).send('User does not exist!');}
 
   const generatedOTP = Math.floor(Math.random() * 9000 + 1000);
 
@@ -87,14 +85,14 @@ router.post('/otp', async(req,res)=>{
 });
 
 router.post('/verify', async(req,res)=>{
-  const user = await Token.findOne({userId: req.body.user.userId}).sort({'createdAt': -1}).limit(1);
-  if(!user) {return res.status(401).send('Token has expired!');}
+  const link = await Token.findOne({userId: req.body.user.userId}).sort({'createdAt': -1}).limit(1);
+  if(!link) {return res.status(401).send('Token has expired!');}
 
-  if(user.token !== req.body.user.token) {return res.status(401).send('Access Denied!');}
+  if(link.token !== req.body.user.token) {return res.status(401).send('Access Denied!');}
 
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash(req.body.password.value, salt);
-  await User.findOneAndUpdate({_id: user.userId}, {
+  await User.findOneAndUpdate({_id: link.userId}, {
     $set: {
       password,
     },

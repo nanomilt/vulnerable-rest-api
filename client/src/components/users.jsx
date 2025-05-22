@@ -4,7 +4,7 @@ import NotificationSystem from 'react-notification-system';
 import Pagination from './common/pagination';
 import { paginate } from '../utils/paginate';
 import Table from './common/table';
-import { getUsers, deleteUser } from '../services/userService';
+import {getUsers, deleteUser} from '../services/userService';
 
 class Users extends Component {
   notificationSystem = React.createRef();
@@ -40,7 +40,7 @@ class Users extends Component {
   ];
 
   state = {
-    users: [],
+    users : [],
     currentPage: 1,
     pageSize: 7,
     sortColumn: { path: 'name', order: 'asc' },
