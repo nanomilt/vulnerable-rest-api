@@ -5,7 +5,9 @@ import { addSubscriber } from '../services/thirdParty';
 class About extends Component{
   notificationSystem = React.createRef();
   state= {
-    user: {},
+    user: {
+      email: '',
+    },
     result: '',
   };
 
