@@ -1,26 +1,24 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import NotificationSystem from 'react-notification-system';
 import { addSubscriber } from '../services/thirdParty';
 
-class About extends Component {
+class About extends Component{
   notificationSystem = React.createRef();
-  state = {
-    user: {
-      email: '',
-    },
+  state= {
+    user: {},
     result: '',
   };
 
   async componentDidMount() {
     const query = this.props.location.search;
     const params = new URLSearchParams(query);
-    const email = params.get('email');
-    if (email) {
-      try {
-        const { data } = await addSubscriber(email);
-        this.setState({ result: data.email });
-      } catch (_) {
-        this.notificationSystem.current.addNotification({
+    if(params.get('email')){
+      try{
+        const {data} = await addSubscriber(params.get('email'));
+        this.setState({result: data.email});
+      }catch(ex){
+        const notification = this.notificationSystem.current;
+        notification.addNotification({
           message: 'Try again later',
           level: 'error',
         });
@@ -36,20 +34,21 @@ class About extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    try {
-      const { email } = this.state.user;
-      const { data } = await addSubscriber(email);
-      this.setState({ result: data.email });
-    } catch (_) {
-      this.notificationSystem.current.addNotification({
+    const notification = this.notificationSystem.current;
+    try{
+      const {email} = this.state.user;
+      const {data} = await addSubscriber(email);
+      this.setState({result: data.email});
+    }catch(ex){
+      notification.addNotification({
         message: 'Try again later',
         level: 'error',
       });
     }
   };
 
-  render() {
-    const { result } = this.state;
+  render(){
+    const {result} = this.state;
     return (
       <React.Fragment>
         <div className="text-center about">
@@ -60,18 +59,19 @@ class About extends Component {
         </div>
         <form className="form-inline about" onSubmit={this.handleSubmit}>
           <label htmlFor="inlineFormEmail" className="m-2">Email</label>
-          <input type="text" className="form-control m-2" id="inlineFormEmail" onChange={this.handleChange} name='email' value={this.state.user.email} />
+          <input type="text" className="form-control m-2" id="inlineFormEmail" onChange={this.handleChange} name='email'/>
           <button type="submit" className="btn btn-primary">Subscribe</button>
         </form>
         {result && (
           <div className="mt-4 text-center">
-            <p className='lead' dangerouslySetInnerHTML={{ __html: `Thank you ${this.state.result} for subscribing!` }}></p>
+            <p className='lead' dangerouslySetInnerHTML={{__html: `Thank you ${this.state.result} for subscribing!`}}></p>
           </div>
         )}
         <NotificationSystem ref={this.notificationSystem} />
       </React.Fragment>
     );
   }
+
 }
 
 export default About;

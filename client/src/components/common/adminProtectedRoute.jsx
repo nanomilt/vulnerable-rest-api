@@ -7,15 +7,17 @@ const AdminProtectedRoute = ({ path, component: Component, render, ...rest }) =>
     <Route
       {...rest}
       render={props => {
-        if (!auth.getUser() || auth.getUser().role !== 'ADMIN')
-        {return (
-          <Redirect
-            to={{
-              pathname: '/not-found',
-              state: { from: props.location },
-            }}
-          />
-        );}
+        const user = auth.getUser();
+        if (!user || user.role !== 'ADMIN') {
+          return (
+            <Redirect
+              to={{
+                pathname: '/not-found',
+                state: { from: props.location },
+              }}
+            />
+          );
+        }
         return Component ? <Component {...props} /> : render(props);
       }}
     />

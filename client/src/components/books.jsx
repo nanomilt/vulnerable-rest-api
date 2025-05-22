@@ -23,7 +23,7 @@ class Books extends Component {
     const {data: categories} = await getCategories();
     const {data: books} = await getBooks();
 
-    this.setState({ books, categories });
+    this.setState({ books , categories });
   }
 
   handleDelete = async book => {

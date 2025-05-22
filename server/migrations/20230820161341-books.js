@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
-  async up(db, _) {
+  async up(db) {
     await db
       .collection('books')
       .insertMany([{
@@ -26,7 +26,7 @@ module.exports = {
       }]);
   },
 
-  async down(db, _) {
+  async down(db) {
     // TODO write the statements to rollback your migration (if possible)
     // Example:
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});

@@ -3,41 +3,47 @@ const { Author } = require('../models/author');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-router.get('/', async (_, res) => {
+router.get('/', async (req, res) => {
   const authors = await Author.find();
   res.send(authors);
 });
 
-router.get('/:id', async (_, res) => {
-  const author = await Author.findById({ _id: _.params.id });
+router.get('/:id', async (req, res) => {
+  const author = await Author.findById({ _id: req.params.id });
   if (!author) {return res.status(404).send('Author Not Found');}
   res.send(author);
 });
 
-router.post('/', auth, async (_, res) => {
-  let author = await Author.findOne({ email: _.body.email });
+router.post('/', auth, async (req, res) => {
+  const author = await Author.findOne({ email: req.body.email });
   if (author) {return res.status(400).send('Author is Already Existed!');}
 
-  author = new Author(_.body);
-  await author.save();
-  res.status(201).send(author);
+  const newAuthor = new Author(req.body);
+  await newAuthor.save();
+  res.status(201).send(newAuthor);
 });
 
-router.put('/:id', auth, async (_, res) => {
-  await Author.findByIdAndUpdate({ _id: _.params.id }, {
-    $set: {
-      name: _.body.name,
-      email: _.body.email,
-      about: _.body.about,
-      job: _.body.job,
+router.put('/:id', auth, async (req, res) => {
+  const updatedAuthor = await Author.findByIdAndUpdate(
+    { _id: req.params.id },
+    {
+      $set: {
+        name: req.body.name,
+        email: req.body.email,
+        about: req.body.about,
+        job: req.body.job,
+      },
     },
-  });
+    { new: true },
+  );
+
+  if (!updatedAuthor) {return res.status(404).send('The author with the given ID was not found');}
 
   res.send('Updated Successfully');
 });
 
-router.delete('/:id', auth, async (_, res) => {
-  const author = await Author.findByIdAndRemove({ _id: _.params.id });
+router.delete('/:id', auth, async (req, res) => {
+  const author = await Author.findByIdAndRemove({ _id: req.params.id });
   if (!author) {return res.status(404).send('The author with the given ID was not found');}
 
   res.send(author);
