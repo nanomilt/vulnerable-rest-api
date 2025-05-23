@@ -4,7 +4,7 @@ import NotificationSystem from 'react-notification-system';
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import Table from "./common/table";
-import {getUsers, deleteUser} from '../services/userService';
+import { getUsers, deleteUser } from '../services/userService';
 import auth from '../services/authService';
 
 class Users extends Component {
@@ -12,44 +12,44 @@ class Users extends Component {
 
     columns = [
         {
-          path: "name",
-          label: "Name"
+            path: "name",
+            label: "Name"
         },
         {
-          path: "email",
-          label: "Email"
+            path: "email",
+            label: "Email"
         },
         {
-          path: "username",
-          label: "Username"
+            path: "username",
+            label: "Username"
         },
         {
-          path: "role",
-          label: "Role"
+            path: "role",
+            label: "Role"
         },
         {
             key: "delete",
             content: user => (
-              <button
-                onClick={() => this.handleDelete(user)}
-                className={user.role === 'ADMIN' ? 'btn btn-danger btn-sm disabled' : 'btn-danger btn-sm'}
+                <button
+                    onClick={() => this.handleDelete(user)}
+                    className={user.role === 'ADMIN' ? 'btn btn-danger btn-sm disabled' : 'btn-danger btn-sm'}
                 >
-                Delete
-              </button>
+                    Delete
+                </button>
             )
-          }
-      ]
+        }
+    ]
 
-      state = {
-        users : [],
+    state = {
+        users: [],
         currentPage: 1,
         pageSize: 7,
         sortColumn: { path: "name", order: "asc" }
-      }
+    }
 
-      handleDelete = async user => {
+    handleDelete = async user => {
         const notification = this.notificationSystem.current;
-        if(user.role == 'ADMIN'){
+        if (user.role === 'ADMIN') {
             notification.addNotification({
                 message: 'Admin can not be deleted!',
                 level: 'error'
@@ -58,47 +58,47 @@ class Users extends Component {
         }
         const users = this.state.users.filter(m => m._id !== user._id);
         this.setState({ users });
-        try{
-          await deleteUser(user._id);
-          notification.addNotification({
-            message: 'Deleted Successfully',
-            level: 'success'
-          });
-        }catch(ex){
-          if(ex.response && ex.response.status === 400){
+        try {
+            await deleteUser(user._id);
             notification.addNotification({
-              message: ex.response.data,
-              level: 'error'
+                message: 'Deleted Successfully',
+                level: 'success'
             });
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                notification.addNotification({
+                    message: ex.response.data,
+                    level: 'error'
+                });
+            }
         }
-      };
     }
 
-      handleSort = sortColumn => {
+    handleSort = sortColumn => {
         this.setState({ sortColumn });
-      };
+    };
 
-      getSortedData = ()=>{
-        const {sortColumn} = this.state;
+    getSortedData = () => {
+        const { sortColumn } = this.state;
         const sorted = _.orderBy(this.state.users, [sortColumn.path], [sortColumn.order]);
         return sorted;
-      }
+    }
 
-      async componentDidMount(){
-        const {data} = await getUsers();
-        this.setState({users: data});
-      }
+    async componentDidMount() {
+        const { data } = await getUsers();
+        this.setState({ users: data });
+    }
 
-      handlePageChange = page => {
+    handlePageChange = page => {
         this.setState({ currentPage: page });
-      };
+    };
 
-      getPagedData = () => {
+    getPagedData = () => {
         const {
-          pageSize,
-          currentPage,
-          sortColumn,
-          users: allUsers
+            pageSize,
+            currentPage,
+            sortColumn,
+            users: allUsers
         } = this.state;
 
         const sorted = _.orderBy(allUsers, [sortColumn.path], [sortColumn.order]);
@@ -106,31 +106,31 @@ class Users extends Component {
         const users = paginate(sorted, currentPage, pageSize);
 
         return { data: users, totalCount: allUsers.length };
-      };
+    };
 
 
     render() {
-    const {data, totalCount} = this.getPagedData();
-    const {pageSize, currentPage} = this.state;
-    return (
-      <div className="users">
-        <Table
-        columns={this.columns}
-        data={data}
-        sortColumn={this.state.sortColumn}
-        onDelete={this.handleDelete}
-        onSort={this.handleSort}
-      />
-      <Pagination
-            itemsCount={totalCount}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={this.handlePageChange}
-      />
-      <NotificationSystem ref={this.notificationSystem} />
-      </div>
-    );
-  }
+        const { data, totalCount } = this.getPagedData();
+        const { pageSize, currentPage } = this.state;
+        return (
+            <div className="users">
+                <Table
+                    columns={this.columns}
+                    data={data}
+                    sortColumn={this.state.sortColumn}
+                    onDelete={this.handleDelete}
+                    onSort={this.handleSort}
+                />
+                <Pagination
+                    itemsCount={totalCount}
+                    pageSize={pageSize}
+                    currentPage={currentPage}
+                    onPageChange={this.handlePageChange}
+                />
+                <NotificationSystem ref={this.notificationSystem} />
+            </div>
+        );
+    }
 }
 
 export default Users;

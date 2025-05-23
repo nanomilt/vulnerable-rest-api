@@ -73,7 +73,7 @@ class Authors extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
@@ -135,6 +135,6 @@ class Authors extends Component {
     </div>
     );
   }
-};
+}
 
 export default Authors;
