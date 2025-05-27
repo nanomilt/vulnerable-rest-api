@@ -45,7 +45,7 @@ class Books extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handlePageChange = page => {
