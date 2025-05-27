@@ -73,7 +73,7 @@ class Authors extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
@@ -133,7 +133,7 @@ class Authors extends Component {
       <NotificationSystem ref={this.notificationSystem} />
       </div>
     </div>
-    );
+    )
   }
 };
 
