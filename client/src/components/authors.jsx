@@ -73,12 +73,12 @@ class Authors extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
-  };
+  }
 
   getSortedData = ()=>{
     const {sortColumn} = this.state;
@@ -93,7 +93,7 @@ class Authors extends Component {
 
   handlePageChange = page => {
     this.setState({ currentPage: page });
-  };
+  }
 
   getPagedData = () => {
     const {
@@ -108,7 +108,7 @@ class Authors extends Component {
     const authors = paginate(sorted, currentPage, pageSize);
 
     return { data: authors, totalCount: allAuthors.length };
-  };
+  }
 
 
   render(){
@@ -135,6 +135,6 @@ class Authors extends Component {
     </div>
     );
   }
-};
+}
 
 export default Authors;
