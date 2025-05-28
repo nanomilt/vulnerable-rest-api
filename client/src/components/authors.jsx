@@ -13,7 +13,7 @@ class Authors extends Component {
   constructor(){
     super();
     const user = auth.getUser();
-    if(user && user.role == 'ADMIN'){
+    if(user && user.role === 'ADMIN'){
         this.columns.push(this.updateColumn,this.deleteColumn);
     }
   }
@@ -25,7 +25,6 @@ class Authors extends Component {
           <button
           className="btn btn-primary btn-sm">Update</button>
       </Link>
-
   )
   }
 
@@ -73,7 +72,7 @@ class Authors extends Component {
           level: 'error'
         });
     }
-  };
+  }
 }
 
   handleSort = sortColumn => {
