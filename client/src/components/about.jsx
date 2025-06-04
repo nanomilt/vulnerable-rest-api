@@ -5,7 +5,7 @@ import { addSubscriber } from '../services/thirdParty';
 class About extends Component{
     notificationSystem = React.createRef();
     state= {
-        user: [],
+        user: {},
         result: ''
     }
 
@@ -18,7 +18,7 @@ class About extends Component{
                 const {data} = await addSubscriber(params.get('email'));
                 this.setState({result: data.email});
             }catch(ex){
-                notification.addNotification({
+                this.notificationSystem.current.addNotification({
                     message: 'Try again later',
                     level: 'error'
                 });
@@ -34,13 +34,12 @@ class About extends Component{
 
     handleSubmit = async e => {
         e.preventDefault();
-        const notification = this.notificationSystem.current;
         try{
             const {email} = this.state.user;
             const {data} = await addSubscriber(email);
             this.setState({result: data.email});
         }catch(ex){
-            notification.addNotification({
+            this.notificationSystem.current.addNotification({
                 message: 'Try again later',
                 level: 'error'
             });
@@ -58,7 +57,7 @@ class About extends Component{
                         </div>
                     </div>
                     <form className="form-inline about" onSubmit={this.handleSubmit}>
-                        <label for="inlineFormEmail" className="m-2">Email</label>
+                        <label htmlFor="inlineFormEmail" className="m-2">Email</label>
                         <input type="text" className="form-control m-2" id="inlineFormEmail" onChange={this.handleChange} name='email'/>
                         <button type="submit" className="btn btn-primary">Subscribe</button>
                     </form>
