@@ -13,8 +13,8 @@ class Authors extends Component {
   constructor(){
     super();
     const user = auth.getUser();
-    if(user && user.role == 'ADMIN'){
-        this.columns.push(this.updateColumn,this.deleteColumn);
+    if(user && user.role === 'ADMIN'){
+        this.columns.push(this.updateColumn, this.deleteColumn);
     }
   }
 
@@ -25,8 +25,7 @@ class Authors extends Component {
           <button
           className="btn btn-primary btn-sm">Update</button>
       </Link>
-
-  )
+    )
   }
 
   deleteColumn = {
@@ -72,13 +71,13 @@ class Authors extends Component {
           message: ex.response.data,
           level: 'error'
         });
+      }
     }
-  };
-}
+  }
 
   handleSort = sortColumn => {
     this.setState({ sortColumn });
-  };
+  }
 
   getSortedData = ()=>{
     const {sortColumn} = this.state;
@@ -93,7 +92,7 @@ class Authors extends Component {
 
   handlePageChange = page => {
     this.setState({ currentPage: page });
-  };
+  }
 
   getPagedData = () => {
     const {
@@ -108,7 +107,7 @@ class Authors extends Component {
     const authors = paginate(sorted, currentPage, pageSize);
 
     return { data: authors, totalCount: allAuthors.length };
-  };
+  }
 
 
   render(){
@@ -135,6 +134,6 @@ class Authors extends Component {
     </div>
     );
   }
-};
+}
 
 export default Authors;
