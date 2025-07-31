@@ -1,7 +1,7 @@
 const express = require('express');
 
 const auth = require('../middleware/auth');
-const {Book} = require('../models/book');
+const { Book } = require('../models/book');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -35,7 +35,7 @@ router.put('/:id', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
   const book = await Book.findByIdAndRemove(req.params.id);
-  if (!book) {return res.status(404).send('The book with the given ID was not found');}
+  if (!book) { return res.status(404).send('The book with the given ID was not found'); }
 
   res.send(book);
 });
