@@ -52,7 +52,7 @@ router.put('/:id', [auth, validateObjectId], async (req, res) => {
       domain = resp.body;
     })
     .catch((_) => {
-
+      // Catch block left empty intentionally
     });
 
   const salt = await bcrypt.genSalt(10);

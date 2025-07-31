@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-let div; // Defining undefined variable 'div'
+let div;
 
 it('renders without crashing', () => {
   div = document.createElement('div');
