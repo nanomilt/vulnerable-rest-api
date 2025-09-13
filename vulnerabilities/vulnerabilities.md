@@ -1,4 +1,4 @@
-# OWASP API Security Top 10 - 2023
+ # OWASP API Security Top 10 - 2023
 
 # Broken Object Property Level Authorization
 
@@ -98,3 +98,4 @@ Users can invite their friends and gain credit for each friend who has joined th
 # Web Cache Deception
 
 - Vulnerable Endpoint: GET /api/me
+
