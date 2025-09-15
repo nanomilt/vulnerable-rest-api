@@ -1,12 +1,16 @@
 module.exports = {
   async up(db, client) {
+    const bcrypt = require('bcrypt');
+    const saltRounds = process.env.SALT_ROUNDS || 10;
+    const hashedPassword = await bcrypt.hash('changeme', saltRounds);
+
     await db
       .collection('users')
       .insertMany([{
         'name': 'Nick',
         'username': 'admin',
         'email': 'admin@gmail.com',
-        'password': '$2b$10$TsOxUC1qsmh5CbPv0OaEzeunm2HQCiwzdfMJz4G1l4D0.MG/L3Hji',
+        'password': hashedPassword,
         'role': 'ADMIN',
       }]);
   },

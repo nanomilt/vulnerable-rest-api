@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const book = await Book.findById({ _id: req.params.id }).populate('author', 'name email phoneNumber -_id').populate('category', 'name -_id');
-  res.send(book);
+  res.render('book', { book }); // Use res.render() to render safely escaped HTML
 });
 
 router.post('/', auth, async (req, res) => {
@@ -30,14 +30,16 @@ router.put('/:id', auth, async (req, res) => {
     },
   }, { new: true });
 
-  res.send(book);
+  res.render('book', { book }); // Use res.render() to render safely escaped HTML
 });
 
 router.delete('/:id', auth, async (req, res) => {
   const book = await Book.findByIdAndRemove(req.params.id);
-  if (!book) {return res.status(404).send('The book with the given ID was not found');}
+  if (!book) {
+    return res.status(404).render('error', { message: 'The book with the given ID was not found' }); // Use res.render() to render safely escaped HTML
+  }
 
-  res.send(book);
+  res.render('book', { book }); // Use res.render() to render safely escaped HTML
 });
 
 module.exports = router;
