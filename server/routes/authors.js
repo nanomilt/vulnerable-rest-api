@@ -44,7 +44,7 @@ router.delete('/:id', auth, async (req, res) => {
   const author = await Author.findByIdAndRemove({_id: req.params.id});
   if(!author) {return res.status(404).send('The author with the given ID was not found');}
 
-  res.send(author);
+  res.send(`Author with ID ${req.params.id} has been deleted.`); // Changed line
 });
 
 module.exports = router;
