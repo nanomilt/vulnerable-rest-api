@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
+let div; // Defining undefined variable 'div'
+
 it('renders without crashing', () => {
-  const div = document.createElement('div');
+  div = document.createElement('div');
   ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

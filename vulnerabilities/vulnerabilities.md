@@ -98,3 +98,5 @@ Users can invite their friends and gain credit for each friend who has joined th
 # Web Cache Deception
 
 - Vulnerable Endpoint: GET /api/me
+
+

@@ -70,9 +70,9 @@ class Users extends Component {
               message: ex.response.data,
               level: 'error'
             });
+          }
         }
-      };
-    }
+      }
 
       handleSort = sortColumn => {
         this.setState({ sortColumn });
